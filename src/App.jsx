@@ -1,9 +1,11 @@
 import React from 'react'
+import Body from './components/Body'
 
 const App = () => {
   return (
     <div >
-      <h1>This is the netflix gpt</h1>
+      <Body />
+
     </div>
   )
 }
