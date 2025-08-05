@@ -6,8 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-
+import { BACKROUND_IMG } from "../utils/constants";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -20,15 +19,12 @@ const Login = () => {
     setIsSignIn(!isSignIn);
   };
 
-  const navigate = useNavigate();
-
   const handleButtonClick = (e) => {
     e.preventDefault();
 
     const message = checkValidData(email.current.value, password.current.value);
     setError(message);
     if (message) return;
-    // sign in & sign up using the firebase authentication
 
     if (!isSignIn) {
       createUserWithEmailAndPassword(
@@ -39,8 +35,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
-          navigate('/browse');
-          // console.log(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -54,32 +48,30 @@ const Login = () => {
         password.current.value
       )
         .then((userCredential) => {
-
           const user = userCredential.user;
-          // console.log(user);
-          navigate('/browse')
-
+          console.log(user);
+          
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          setError( errorMessage);
+          setError(errorMessage);
         });
     }
   };
- 
+
   return (
-    <div className="relative h-screen w-full ">
+    <div className="relative h-screen w-full bg-black ">
       <img
-        className="h-full w-full object-cover "
-        src="https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_large.jpg"
+        className="hidden sm:block h-full w-full object-cover"
+        src= {BACKROUND_IMG}
         alt="Netflix background"
       />
 
-      <div className="absolute inset-0 p-10">
+      <div className="absolute inset-0 p-4 backdrop-brightness-50 ">
         <Header />
         <div className="flex justify-center items-center h-full ">
-          <form className="bg-black opacity-90 text-white px-14 pt-14 pb-34 rounded-lg w-full max-w-md   ">
+          <form className="bg-black opacity-90 text-white p-4 md:p-10 sm:p-8 rounded-lg w-full max-w-md  ">
             <h1 className="text-3xl font-bold mb-10">
               {" "}
               {isSignIn ? "Sign In" : "Sign Up"}

@@ -14,22 +14,33 @@ const Browse = () => {
     signOut(auth)
       .then(() => {
         dispatch(removeUser());
-        navigate("/");
       })
       .catch((error) => {
         console.error("Error signing out:", error);
       });
   };
+
+  
+
   return (
-    <div className="min-h-screen  bg-black text-white">
-      <nav className="flex justify-between items-center py-4">
-        <Header />
-        <div className="w-10 h-10 flex items-center justify-center bg-amber-800 text-white font-bold rounded-full">
-          L
+    <div className="min-h-screen bg-black text-white">
+      <nav className="flex justify-evenly items-center px-6 py-4 bg-zinc-900">
+        <div className="flex items-center">
+          <Header />
         </div>
-        <button className="px-6 py-2 bg-blue-900" onClick={handleSignOut}>
-          Sign out
-        </button>
+
+
+        <div className="flex items-center space-x-6">
+          <div className="w-10 h-10 flex items-center justify-center bg-amber-800 text-white font-bold rounded-full">
+            L
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="px-4 py-2 bg-blue-800 rounded hover:bg-blue-700 transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
       </nav>
     </div>
   );
