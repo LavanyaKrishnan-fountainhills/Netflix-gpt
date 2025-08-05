@@ -1,25 +1,86 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/Validate";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
+  const [error, setError] = useState(null);
+
+  const email = useRef(null);
+  const password = useRef(null);
 
   const toggleSignInForm = () => {
     setIsSignIn(!isSignIn);
   };
+
+  const navigate = useNavigate();
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+
+    const message = checkValidData(email.current.value, password.current.value);
+    setError(message);
+    if (message) return;
+    // sign in & sign up using the firebase authentication
+
+    if (!isSignIn) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          navigate('/browse');
+          // console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setError(errorMessage);
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+
+          const user = userCredential.user;
+          // console.log(user);
+          navigate('/browse')
+
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setError( errorMessage);
+        });
+    }
+  };
+ 
   return (
-    <div className="relative h-screen w-screen ">
+    <div className="relative h-screen w-full ">
       <img
-        className="h-full w-full object-cover"
+        className="h-full w-full object-cover "
         src="https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_large.jpg"
         alt="Netflix background"
       />
 
-      <div className="absolute inset-0 m-2">
-        <Header /> 
+      <div className="absolute inset-0 p-10">
+        <Header />
         <div className="flex justify-center items-center h-full ">
-          <form className="bg-black opacity-90 text-white p-5 rounded-lg w-full max-w-md mt-14 ">
-            <h1 className="text-3xl font-bold mb-6">
+          <form className="bg-black opacity-90 text-white px-14 pt-14 pb-34 rounded-lg w-full max-w-md   ">
+            <h1 className="text-3xl font-bold mb-10">
               {" "}
               {isSignIn ? "Sign In" : "Sign Up"}
             </h1>
@@ -28,7 +89,8 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="Email or Mobile number"
-                className="w-full p-3 bg-gray-700 rounded outline-none"
+                className="w-full p-4 bg-transparent border border-gray-700 placeholder:text-white rounded outline-none text-white"
+                ref={email}
               />
             </div>
 
@@ -37,7 +99,7 @@ const Login = () => {
                 <input
                   type="text"
                   placeholder="Full Name"
-                  className="w-full p-3 bg-gray-700 rounded outline-none"
+                  className="w-full p-4 bg-transparent border border-gray-700 rounded outline-none text-white placeholder:text-white"
                 />
               </div>
             )}
@@ -46,12 +108,19 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full p-3 bg-gray-700 rounded outline-none"
+                className="w-full p-4 bg-transparent border border-gray-700 rounded outline-none text-white placeholder:text-white"
+                ref={password}
               />
             </div>
+            <p className="text-red-500 text-center font-semibold capitalize mb-4">
+              {error}
+            </p>
 
             <div className="mb-4">
-              <button className="w-full bg-red-600 hover:bg-red-700 p-3 rounded font-semibold">
+              <button
+                className="w-full bg-red-600 hover:bg-red-700 p-3 rounded font-semibold"
+                onClick={handleButtonClick}
+              >
                 {isSignIn ? "Sign In" : "Sign Up"}
               </button>
             </div>
@@ -64,7 +133,7 @@ const Login = () => {
               </button>
             </div>
 
-            <p className="text-left text-sm mb-4 cursor-pointer hover:underline">
+            <p className="text-left lg:text-center text-sm mb-4 cursor-pointer hover:underline">
               Forgot Password?
             </p>
 
@@ -86,7 +155,7 @@ const Login = () => {
             <p className="text-xs text-gray-400">
               This page is protected by Google reCAPTCHA to ensure you're not a
               bot.{" "}
-              <span className="text-blue-500 hover:underline cursor-pointer">
+              <span className="text-blue-500 hover:underline cursor-pointer ">
                 Learn more.
               </span>
             </p>
