@@ -5,13 +5,11 @@ import VideoBackground from "./VideoBackground";
 
 const MainContainer = () => {
   const movies = useSelector((store) => store.movie?.nowPlayingMovies);
-  // console.log("getting in the format fo",movies);
-  if(!movies) return;
+
+  if (!movies || movies.length === 0) return null; // no movies yet
 
   const mainMovie = movies[0];
-  // console.log(mainMovie);
-  
-  const {title,overview,id} = mainMovie;
+  const { title, overview, id } = mainMovie;
 
   return (
     <div>
